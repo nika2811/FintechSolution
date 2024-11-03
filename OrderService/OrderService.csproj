@@ -25,8 +25,9 @@
         <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="1.9.0" />
         <PackageReference Include="OpenTelemetry.Instrumentation.SqlClient" Version="1.9.0-beta.1" />
         <PackageReference Include="RabbitMQ.Client" Version="6.8.1" />
-        <PackageReference Include="Serilog" Version="4.1.1-dev-02314" />
+        <PackageReference Include="Serilog" Version="4.1.1-dev-02318" />
         <PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
+        <PackageReference Include="Serilog.Extensions.Hosting" Version="8.0.0" />
         <PackageReference Include="Serilog.Sinks.Seq" Version="9.0.0-dev-00310" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.9.0" />
     </ItemGroup>

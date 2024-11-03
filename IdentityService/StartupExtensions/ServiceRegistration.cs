@@ -3,6 +3,7 @@ using FluentValidation.AspNetCore;
 using IdentityService.Data;
 using IdentityService.Repositories;
 using IdentityService.Services;
+using IdentityService.StartupExtensions.Logging;
 using IdentityService.Validators;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,6 +27,8 @@ public static class ServiceRegistration
         services.AddScoped<ICompanyRepository, CompanyRepository>();
         services.AddScoped<ICompanyService, CompanyService>();
 
+        services.AddSingleton<CustomMetrics>();
+        
         services.AddValidatorsFromAssemblyContaining<RegisterCompanyDtoValidator>();
         services.AddFluentValidationAutoValidation();
     }

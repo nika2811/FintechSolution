@@ -1,4 +1,3 @@
-# config/otel-collector-config.yaml
 receivers:
   otlp:
     protocols:
@@ -12,49 +11,91 @@ processors:
     timeout: 1s
     send_batch_size: 1024
 
-  memory_limiter:
-    check_interval: 1s
-    limit_mib: 1536
-    spike_limit_mib: 512
-
-  resourcedetection:
-    detectors: [env, system]
-    timeout: 2s
-
 exporters:
-  prometheus:
-    endpoint: "0.0.0.0:8889"
-    const_labels:
-      label1: value1
-
+  otlphttp/logs:
+    endpoint: "http://loki:3100/otlp"
+    tls:
+      insecure: true
+  
+  otlp/tempo:
+    endpoint: tempo:3200
+    tls:
+      insecure: true
+  
   jaeger:
     endpoint: jaeger:14250
     tls:
       insecure: true
 
-  loki:
-    endpoint: http://loki:3100/loki/api/v1/push
-    format: json
-
 service:
-  telemetry:
-    logs:
-      level: info
-    metrics:
-      address: 0.0.0.0:8888
-
   pipelines:
     traces:
       receivers: [otlp]
-      processors: [memory_limiter, batch]
-      exporters: [jaeger]
-    
-    metrics:
-      receivers: [otlp]
-      processors: [memory_limiter, batch]
-      exporters: [prometheus]
-    
+      processors: [batch]
+      exporters: [otlp/tempo, jaeger]
     logs:
       receivers: [otlp]
-      processors: [memory_limiter, batch]
-      exporters: [loki]
+      processors: [batch]
+      exporters: [otlphttp/logs]
+
+  telemetry:
+    logs:
+      level: "info"
+    metrics:
+      level: "detailed"
+
+
+
+##Working one 
+# receivers:
+#   otlp:
+#     protocols:
+#       grpc:
+#         endpoint: 0.0.0.0:4317
+#       http:
+#         endpoint: 0.0.0.0:4318
+
+# exporters:
+#   otlphttp/logs:
+#     endpoint: "http://loki:3100/otlp"
+#     tls:
+#       insecure: true
+
+# service:
+#   pipelines:
+#     logs:
+#       receivers: [otlp]
+#       exporters: [otlphttp/logs]
+
+
+
+
+
+
+## Best one
+# receivers:
+#   otlp:
+#     protocols:
+#       grpc:
+#         endpoint: 0.0.0.0:4317
+#       http:
+#         endpoint: 0.0.0.0:4318
+
+# exporters:
+#   otlphttp/logs:
+#     endpoint: "http://loki:3100/otlp"
+#     tls:
+#       insecure: true
+#   otlp/traces:
+#     endpoint: tempo:3200
+#     tls:
+#       insecure: true
+
+# service:
+#   pipelines:
+#     logs:
+#       receivers: [otlp]
+#       exporters: [otlphttp/logs]
+#     traces:
+#       receivers: [otlp]
+#       exporters: [otlp/traces]
